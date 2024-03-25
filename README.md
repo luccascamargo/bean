@@ -9,3 +9,6 @@ Atualizar ```.env``` de acordo com seu banco de dados <br>
 ```yarn``` para instalar as dependências. <br>
 Atualizar ```.env``` para conectar ao servidor backend. <br>
 ```yarn dev``` para iniciar o servidor <br>
+
+
+### docker não está totalmente configurado :/
