@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_REACT_APP_BACKEND_URL: "https://backend:8080"
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
+  postgres:
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "bean"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+    networks:
+      - app_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: "postgresql://admin:admin@postgres:5432/bean?schema=public"
+    depends_on:
+      - postgres
+    networks:
+      - app_network
+
+  prisma-migrate:
+    image: node:latest
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    command: npx prisma migrate dev
+    depends_on:
+      - backend
+
+networks:
+  app_network:
+    driver: bridge
